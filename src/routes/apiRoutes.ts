@@ -1,19 +1,19 @@
-import {type Serve} from 'bun';
+import { type Serve } from 'bun';
 
 const apiRoutes: Serve.Routes<undefined, string> = {
   '/api': {
-    POST: async (req) => {
-      if(!req.body) {
-        return Response.error();
+    POST: (req) => {
+      if (!req.body) {
+        return Response.json({ requestData: 'Empty body!!!' });
       }
 
-      const data = await req.body.json();
-
-      if (!data || !data.data) {
-        return Response.json({requestData: 'error'});
-      }
-
-      return Response.json({requestData: 'You request ' + data.data + '!!!'});
+      return req.body.json()
+        .then(data => {
+          if (!data || !data.data) {
+            return Response.json({ requestData: 'Wrong body!!!' });
+          }
+          return Response.json({ requestData: 'You request ' + data.data + '!!!' });
+        })
     }
   }
 }
